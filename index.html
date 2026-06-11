@@ -177,6 +177,7 @@
       font-weight: 950;
     }
     .controls {
+      margin-top: 0;
       margin-top: 20px;
       padding: 18px;
       display: grid;
@@ -263,6 +264,7 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 20px;
+      align-items: start;
     }
     .cards-panel {
       padding: 20px;
@@ -395,6 +397,17 @@
       margin: 8px 0 0;
       padding-left: 18px;
     }
+
+    .info-grid.tips-only {
+      grid-template-columns: 1fr;
+    }
+    .practice-tips-bottom {
+      margin-top: 0;
+    }
+    .practice-tips-card {
+      width: 100%;
+    }
+
     .footer-note {
       margin-top: 18px;
       color: rgba(36,26,50,.66);
@@ -462,25 +475,8 @@
         </div>
         <div class="movement-grid" id="movementGrid"></div>
       </section>
-      <section class="info-panel panel">
-        <div class="info-grid tips-only">
-          <div class="mini-card practice-tips-card">
-            <h3>Practice tips</h3>
-            <ul>
-              <li>Start with a slow tempo, then increase gradually.</li>
-              <li>Practice seated or standing near a stable support.</li>
-              <li>Say the movement name aloud for extra cognitive challenge.</li>
-              <li>Stop if movement causes pain, dizziness, or shortness of breath.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-</section>
 
-    
-
-
-    <section class="controls panel" aria-label="Practice controls">
+      <section class="controls panel" aria-label="Practice controls">
       <div class="control-group wide">
         <div class="control-label">
           <span>Practice controls</span>
@@ -525,6 +521,20 @@
           <option value="random">Random card each round</option>
         </select>
       </div>
+    </section>
+
+      <section class="info-panel panel practice-tips-bottom">
+        <div class="info-grid tips-only">
+          <div class="mini-card practice-tips-card">
+            <h3>Practice tips</h3>
+            <ul>
+              <li>Start with a slow tempo, then increase gradually.</li>
+              <li>Practice seated or standing near a stable support.</li>
+              <li>Say the movement name aloud for extra cognitive challenge.</li>
+              <li>Stop if movement causes pain, dizziness, or shortness of breath.</li>
+            </ul>
+          </div>
+        </div>
     </section>
 
     <p class="footer-note">IDance-Cog prototype · Single-file app · Client-side only · Four-in-a-row animated movement cards · One beat per card · Tempo-adjustable soundtracks</p>

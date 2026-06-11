@@ -177,6 +177,7 @@
       font-weight: 950;
     }
     .controls {
+      margin-top: 20px;
       padding: 18px;
       display: grid;
       grid-template-columns: repeat(12, 1fr);
@@ -369,6 +370,12 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
     }
+    .info-grid.tips-only {
+      grid-template-columns: 1fr;
+    }
+    .practice-tips-card {
+      width: 100%;
+    }
     .mini-card {
       border-radius: 20px;
       background: rgba(255,255,255,.38);
@@ -455,31 +462,20 @@
         </div>
         <div class="movement-grid" id="movementGrid"></div>
       </section>
-
       <section class="info-panel panel">
-        <div class="info-grid">
-          <div class="mini-card">
-            <h3>Animated movements</h3>
-            <p>Each body percussion movement is now displayed as its own standalone looping GIF, instead of one connected animation sequence.</p>
-          </div>
-          <div class="mini-card">
+        <div class="info-grid tips-only">
+          <div class="mini-card practice-tips-card">
             <h3>Practice tips</h3>
             <ul>
               <li>Start with a slow tempo, then increase gradually.</li>
               <li>Practice seated or standing near a stable support.</li>
               <li>Say the movement name aloud for extra cognitive challenge.</li>
-            </ul>
-          </div>
-          <div class="mini-card">
-            <h3>Keyboard shortcuts</h3>
-            <ul>
-              <li><strong>Space:</strong> start or stop practice</li>
-              <li><strong>R:</strong> randomize the four boxes</li>
+              <li>Stop if movement causes pain, dizziness, or shortness of breath.</li>
             </ul>
           </div>
         </div>
       </section>
-    </section>
+</section>
 
     
 
@@ -510,13 +506,14 @@
           <span>Soundtrack</span>
         </label>
         <select id="soundStyle">
-          <option value="80track">Percussive soundtrack — 80 BPM</option>
-          <option value="70track">Percussive soundtrack — 70 BPM</option>
+          <option value="80track">Percussive soundtrack — 80 BPM, tempo-adjustable</option>
+          <option value="70track">Percussive soundtrack — 70 BPM, tempo-adjustable</option>
           <option value="warm">Generated warm pulse</option>
           <option value="wood">Generated wood block</option>
           <option value="soft">Generated soft bell</option>
           <option value="drum">Generated low drum</option>
         </select>
+        <p class="small-copy" style="margin-top:10px;">Tempo slider changes playback speed.</p>
       </div>
 
       <div class="control-group">
@@ -530,7 +527,7 @@
       </div>
     </section>
 
-    <p class="footer-note">IDance-Cog prototype · Single-file app · Client-side only · Four-in-a-row animated movement cards · One beat per card</p>
+    <p class="footer-note">IDance-Cog prototype · Single-file app · Client-side only · Four-in-a-row animated movement cards · One beat per card · Tempo-adjustable soundtracks</p>
   </main>
 
   <script>
@@ -602,6 +599,7 @@
       }
       nowCard.style.display = "none";
       nowCard.textContent = "Ready to practice";
+      beatNumber.textContent = "1";
       renderCards();
     }
 
@@ -625,6 +623,20 @@
       return null;
     }
 
+    function selectedTrackBaseBpm() {
+      const bpm = selectedTrackBpm();
+      return bpm ? Number(bpm) : null;
+    }
+
+    function applySoundtrackTempo() {
+      if (!soundtrackAudio) return;
+      const baseBpm = selectedTrackBaseBpm();
+      if (!baseBpm) return;
+      const targetBpm = Number(tempo.value);
+      const rate = Math.max(0.5, Math.min(2.0, targetBpm / baseBpm));
+      soundtrackAudio.playbackRate = rate;
+    }
+
     function stopSoundtrack() {
       if (soundtrackAudio) {
         soundtrackAudio.pause();
@@ -640,6 +652,7 @@
       soundtrackAudio = new Audio(soundtrackData[bpm]);
       soundtrackAudio.loop = true;
       soundtrackAudio.volume = 0.85;
+      applySoundtrackTempo();
       soundtrackAudio.play().catch(() => {});
       return true;
     }
@@ -722,7 +735,7 @@
 
       beatInCard += 1;
       const beatsTotal = 1;
-      beatNumber.textContent = ((beatInCard - 1) % 4) + 1;
+      beatNumber.textContent = currentIndex + 1;
       playBeat(beatInCard === 1);
 
       if (beatInCard >= beatsTotal) {
@@ -797,6 +810,7 @@
         countdown.style.display = "none";
         nowPlaying.style.display = "grid";
         nowCard.textContent = "Practice paused";
+        beatNumber.textContent = "1";
         currentIndex = -1;
         renderCards();
       }
@@ -811,6 +825,7 @@
 
     tempo.addEventListener("input", () => {
       tempoValue.textContent = tempo.value;
+      applySoundtrackTempo();
       restartTempoIfNeeded();
     });
     randomizeBtn.addEventListener("click", randomizeCards);
